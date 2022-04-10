@@ -41,7 +41,9 @@ app.use(cors(corsOptions));
 app.set("port", process.env.APP_PORT || 4000);
 app.set("host", process.env.APP_HOST || "localhost");
 app.use("/api/v1", routes);
-
+app.use("/", (req, res) => {
+  return res.send("welcome to Smart buy");
+});
 // send back a 404 error for any unknown api request
 app.use((req, res, next) => {
   next(new ApiError(httpStatus.NOT_FOUND, "Not found"));
