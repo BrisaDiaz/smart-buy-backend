@@ -1,0 +1,295 @@
+{
+    "openapi": "3.0.0",
+    "info": {
+        "title": "Smart Buy",
+        "description": "Argentine supermarket products tracker",
+        "version": "1.0.0",
+        "license": {
+            "name": "MIT",
+            "url": "https://github.com/hagopj13/node-express-boilerplate/blob/master/LICENSE"
+        }
+    },
+    "servers": [
+        {
+            "url": "http://localhost:4000"
+        }
+    ],
+    "basePath": "/api/v1",
+    "paths": {
+        "/market/search": {
+            "get": {
+                "parameters": [
+                    {
+                        "name": "market",
+                        "in": "query",
+                        "required": true,
+                        "description": "name/s of market to search on",
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "cordiez",
+                                "coto",
+                                "dia",
+                                "disco",
+                                "hiperlibertad",
+                                "jumbo",
+                                "maxiconsumo",
+                                "super mami",
+                                "walmart",
+                                "vea"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "query",
+                        "in": "query",
+                        "required": true,
+                        "description": "name of product to search",
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "total": {
+                                            "type": "string"
+                                        },
+                                        "products": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/Product"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: invalid queries",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/tracker/products": {
+            "post": {
+                "description": "Initialize product price tracking",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "market": {
+                                        "type": "string"
+                                    },
+                                    "link": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "integer"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "schema": {
+                                "type": "object",
+                                "properties": {
+                                    "id": {
+                                        "type": "string"
+                                    },
+                                    "title": {
+                                        "type": "string"
+                                    },
+                                    "market": {
+                                        "type": "string"
+                                    },
+                                    "link": {
+                                        "type": "string"
+                                    },
+                                    "price": {
+                                        "type": "integer"
+                                    },
+                                    "createdAt": {
+                                        "type": "string"
+                                    },
+                                    "updatedAt": {
+                                        "type": "string"
+                                    },
+                                    "image": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad request: invalid product schema",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not found",
+                        "content": {
+                            "text/plain": {
+                                "schema": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "get": {
+                "description": "Get  tracking product with price history",
+                "parameters": [
+                    {
+                        "name": "link",
+                        "required": true,
+                        "description": "Product link to source details page",
+                        "schema": { "type": "string" }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "ok",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "object",
+                                    "properties": {
+                                        "product": {
+                                            "$ref": "#/definitions/TrackedProduct"
+                                        },
+                                        "priceHistory": {
+                                            "type": "array",
+                                            "items": {
+                                                "$ref": "#/definitions/TrackedPrice"
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "400": {
+                    "description": "Bad request: invalid  link",
+                    "content": {
+                        "text/plain": {
+                            "schema": {
+                                "type": "string"
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Product": {
+            "xml": {
+                "name": "Products"
+            },
+            "type": "object",
+            "properties": {
+                "title": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "integer"
+                }
+            }
+        },
+        "TrackedProduct": {
+            "xml": {
+                "name": "TrackedProduct"
+            },
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "market": {
+                    "type": "string"
+                },
+                "link": {
+                    "type": "string"
+                },
+                "price": {
+                    "type": "integer"
+                },
+                "image": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                },
+                "updatedAt": {
+                    "type": "string"
+                }
+            }
+        },
+        "TrackedPrice": {
+            "xml": {
+                "name": "TrackedPrice"
+            },
+            "type": "object",
+            "properties": {
+                "value": {
+                    "type": "integer"
+                },
+                "productId": {
+                    "type": "string"
+                },
+                "createdAt": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

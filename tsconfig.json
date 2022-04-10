@@ -1,0 +1,16 @@
+{
+  "compilerOptions": {
+    "module": "commonjs",
+    "esModuleInterop": true,
+     "resolveJsonModule": true,
+    "target": "es2021",
+    "moduleResolution": "node",
+    "sourceMap": true,
+    "outDir": "dist",
+    "strict": false
+
+  },
+  "lib": ["es2021"],
+   "include": ["src/**/*.ts", "src/lib/redis.ts",".d.ts"],
+   "exclude": ["node_modules", "**/*.spec.ts"]
+}
