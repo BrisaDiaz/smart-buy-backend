@@ -2,7 +2,7 @@ import puppeteer, {Page, Browser} from "puppeteer";
 import * as cheerio from "cheerio";
 import dotenv from "dotenv";
 
-import {Product} from "../../interfaces";
+import {Product} from "../interfaces";
 import {saveWithTtl, get} from "../lib/redis";
 import fixStringNumber from "../utils/fixStringNumber";
 dotenv.config({path: ".env"});

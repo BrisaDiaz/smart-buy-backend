@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import {CronJob} from "cron";
 
-import {Product} from "../../interfaces";
+import {Product} from "../interfaces";
 import {
   getProductByLink,
   getProductPricesByLink,

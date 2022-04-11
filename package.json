@@ -24,7 +24,7 @@
     "xss-clean": "^0.1.1"
   },
   "scripts": {
-    "start": "node dist/src/index",
+    "start": "node dist/index",
     "build": "tsc",
     "postinstall": "tsc",
     "dev": "nodemon",
