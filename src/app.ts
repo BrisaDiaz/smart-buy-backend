@@ -24,8 +24,11 @@ app.use(express.urlencoded({extended: true}));
 // sanitize request data
 app.use(xss());
 
- 
-const whitelist = ["https://smart-buy.vercel.app", "http://localhost:3000"];
+const whitelist = ["https://smart-buy.vercel.app"];
+
+if (process.env.NODE_ENV !== "production") {
+  whitelist.push("http://localhost:3000");
+}
 const corsOptions = {
   origin: function (origin, callback) {
     if (whitelist.indexOf(origin) !== -1) {
@@ -35,6 +38,7 @@ const corsOptions = {
     }
   },
 };
+
 // enable cors
 app.use(cors(corsOptions));
 
