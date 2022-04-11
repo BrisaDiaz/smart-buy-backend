@@ -92,6 +92,9 @@ async function getMarketProducts(market: string, page: Page, browser: Browser) {
   if (market === "vea") return getVeaProducts(page, browser);
 
   if (market === "maxiconsumo") return getMaxiProducts(page, browser);
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html: string = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -123,14 +126,16 @@ async function getHiperlibertadProducts(html: string) {
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
-  $(".searched-row .product").each((index, el) => {
+  $(".styles__ProductItem-sc-1tfhldk-0").each((index, el) => {
     const product = $(el);
-    const title = product.find("h5").text();
+    const title = product.find("h2").text();
     const link = product.find("a").first().attr("href") as string;
-    const price = fixStringNumber(product.find(".offer-price").text().split("$")[1].trim());
-    const image = product.find(".product-content img").attr("src") as string;
+    const price = fixStringNumber(
+      product.find(".styles__BestPrice-sc-1tfhldk-12").text().split("$")[1].trim(),
+    );
+    const image = product.find("img").attr("src") as string;
 
-    products.push({title, price, image, link, market: "cordiez"});
+    products.push({title, price, image, link, market: "hiperlibertad"});
   });
 
   return products;
@@ -162,6 +167,9 @@ async function getAnonimaProducts(html: string) {
 async function getVeaProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -188,6 +196,9 @@ async function getVeaProducts(page: Page, browser: Browser) {
 async function getDiscoProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -222,6 +233,9 @@ async function getJumboProducts(page: Page, browser: Browser) {
   await page.click(".select2-results__options li:nth-child(3)");
 
   await page.waitForNetworkIdle();
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -262,7 +276,9 @@ async function getCarrefourProducts(page: Page, browser: Browser) {
       timeout: 0,
     });
   }
-
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -294,6 +310,9 @@ async function getCarrefourProducts(page: Page, browser: Browser) {
 async function getCotoProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -325,6 +344,9 @@ async function getMaxiProducts(page: Page, browser: Browser) {
   await page.waitForSelector('[data-value="asc"],.notice', {timeout: 0});
   if (await page.$(".notice")) return products;
   await page.click('[data-value="asc"]');
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
