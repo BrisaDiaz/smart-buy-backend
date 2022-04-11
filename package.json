@@ -2,6 +2,9 @@
   "name": "puppeteer-project",
   "version": "1.0.0",
   "description": "",
+  "engines": {
+    "node": "12.16.3"
+  },
   "dependencies": {
     "@types/puppeteer": "^5.4.5",
     "cheerio": "^1.0.0-rc.10",
@@ -23,9 +26,11 @@
   "scripts": {
     "start": "node dist/index",
     "build": "tsc",
+    "postinstall": "tsc",
     "dev": "nodemon",
     "lint": "eslint --fix  --ext .ts  .",
-    "test": "jest"
+    "test": "jest",
+    "deploy": "git add . && git commit -m Heroku && git push heroku master"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
