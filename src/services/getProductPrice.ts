@@ -42,6 +42,7 @@ const minimalArgs = [
   "--password-store=basic",
   "--use-gl=swiftshader",
   "--use-mock-keychain",
+  "--headless",
 ];
 
 async function configureBrowser(url: string) {
