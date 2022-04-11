@@ -8,10 +8,30 @@ import morgan from "morgan";
 
 import ApiError from "./utils/ApiError";
 import routes from "./routes/v1";
+
 dotenv.config({path: ".env"});
+// enable cors
 
 const app = express();
 
+if (process.env.NODE_ENV === "production") {
+  const whitelist = ["https://smart-buy.vercel.app"];
+  const corsOptions = {
+    origin: function (origin, callback) {
+      if (whitelist.indexOf(origin) !== -1) {
+        callback(null, true);
+      } else {
+        callback(new ApiError(httpStatus.FORBIDDEN, "Not allowed by CORS"));
+      }
+    },
+    methods: "GET,HEAD,POST",
+    optionsSuccessStatus: 204,
+  };
+
+  app.use(cors(corsOptions));
+} else {
+  app.use(cors());
+}
 app.use(morgan("tiny"));
 app.use(helmet());
 
@@ -23,9 +43,6 @@ app.use(express.urlencoded({extended: true}));
 
 // sanitize request data
 app.use(xss());
-
-// enable cors
-app.use(cors());
 
 app.set("port", process.env.PORT || 4000);
 app.set("host", process.env.HOST || "0.0.0.0");

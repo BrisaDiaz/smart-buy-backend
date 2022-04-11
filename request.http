@@ -16,7 +16,7 @@ content-type: application/json
 }
 ###
 
-GET  http://localhost:4000/api/v1/market/search?query=bizcochuelo&market=dia
+GET  http://localhost:4000/api/v1/market/search?query=bizcochuelo&market=la%20anonima%20online
 
 ###
 
@@ -34,6 +34,5 @@ content-type: application/json
 
     }
 }
-
-
-GET  http://localhost:4000/api/v1/tracker/products?link=https://www.vea.com.ar/mayonesa-hellmann-s-light-237-g-doypack/p
+###
+GET  http://localhost:4000/api/v1/tracker/products?link=https://diaonline.supermercadosdia.com.ar/bizcochuelo-exquisita-chocolate-540-gr-150088/p

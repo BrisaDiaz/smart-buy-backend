@@ -110,11 +110,9 @@ async function getCordiezProducts(html: string) {
   $(".searched-row .product").each((index, el) => {
     const product = $(el);
     const title = product.find("h5").text();
-    const link = ("https://supermercado.laanonimaonline.com" +
-      product.find("a").first().attr("href")) as string;
+    const link = product.find("a").first().attr("href") as string;
     const price = fixStringNumber(product.find(".offer-price").text().split("$")[1].trim());
-    const image = ("https://supermercado.laanonimaonline.com" +
-      product.find(".product-content img").attr("src")) as string;
+    const image = product.find(".product-content img").attr("src") as string;
 
     products.push({title, price, image, link, market: "cordiez"});
   });
@@ -144,10 +142,17 @@ async function getAnonimaProducts(html: string) {
   $(".producto .item").each((index, el) => {
     const product = $(el);
     const title = product.find(".titulo02").text().trim();
-    const link = product.find(".titulo02  a").attr("href") as string;
+    const link = `https://supermercado.laanonimaonline.com${product
+      .find("a")
+      .first()
+      .attr("href")}`;
     const price = fixStringNumber(product.find(".precio").text().replace("$", ""));
 
-    const image = product.find("img").attr("src") as string;
+    const image = `${
+      product.find("img").attr("src").includes("https")
+        ? ""
+        : "https://supermercado.laanonimaonline.com"
+    }${product.find("img").attr("src")}`;
 
     products.push({title, price, image, link, market: "la anonima online"});
   });
