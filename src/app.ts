@@ -28,7 +28,7 @@ app.use(xss());
 app.use(cors());
 
 app.set("port", process.env.PORT || 4000);
-app.set("host", process.env.HOST || "127.0.0.1");
+app.set("host", process.env.HOST || "localhost");
 app.use("/api/v1", routes);
 app.use("/", (req, res) => {
   return res.send("welcome to Smart buy");
