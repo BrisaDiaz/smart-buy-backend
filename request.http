@@ -1,0 +1,39 @@
+
+POST http://localhost:4000/api/v1/tracker/products  HTTP/1.1
+content-type: application/json
+
+{
+      "product": {
+      "title": "Mayonesa Hellmanns Clasica  X237g",
+      "price": 132,
+      "image": {
+        "src": "https://jumboargentina.vtexassets.com/arquivos/ids/687731-500-auto?v=637799529681900000&width=500&height=auto&aspect=true",
+        "alt": "Mayonesa Hellmanns Clasica  X237g"
+      },
+      "link": "https://www.vea.com.ar/mayonesa-hellmanns-clasica-x237g/p",
+      "market": "vea"
+    }
+}
+###
+
+GET  http://localhost:4000/api/v1/market/search?query=bizcochuelo&market=dia
+
+###
+
+POST http://localhost:4000/api/v1/tracker/products  HTTP/1.1
+content-type: application/json
+
+{
+      "product": {
+      "title": "Mayonesa Hellmanns Clasica  X237g",
+      "price": 132,
+      "image": {
+        "src": "https://jumboargentina.vtexassets.com/arquivos/ids/687731-500-auto?v=637799529681900000&width=500&height=auto&aspect=true",
+        "alt": "Mayonesa Hellmanns Clasica  X237g"
+      }
+
+    }
+}
+
+
+GET  http://localhost:4000/api/v1/tracker/products?link=https://www.vea.com.ar/mayonesa-hellmann-s-light-237-g-doypack/p
