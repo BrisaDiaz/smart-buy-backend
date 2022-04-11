@@ -24,13 +24,13 @@
     "xss-clean": "^0.1.1"
   },
   "scripts": {
-    "start": "node dist/index",
+    "start": "node dist/src/index",
     "build": "tsc",
     "postinstall": "tsc",
     "dev": "nodemon",
     "lint": "eslint --fix  --ext .ts  .",
     "test": "jest",
-    "deploy": "git add . && git commit -m Heroku && git push heroku master"
+    "deploy": "git push heroku master"
   },
   "devDependencies": {
     "@types/cors": "^2.8.12",
