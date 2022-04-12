@@ -60,7 +60,9 @@ const minimalArgs = [
   "--password-store=basic",
   "--use-gl=swiftshader",
   "--use-mock-keychain",
+  "--force-device-scale-factor=0.5",
   "--headless",
+  "--window-size=0,6000",
 ];
 
 async function configureBrowser(url: string) {
@@ -70,7 +72,7 @@ async function configureBrowser(url: string) {
     args: minimalArgs,
   });
   const page = await browser.newPage();
-
+  await page.setViewport({ width: 2560, height: 6000 });
   await page.goto(url, {
     waitUntil: "networkidle2",
     timeout: 0,
@@ -79,9 +81,7 @@ async function configureBrowser(url: string) {
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
   );
 
-  page.setViewport({width: 1366, height: 768});
-
-  return {page, browser};
+  return { page, browser };
 }
 
 async function getMarketProducts(market: string, page: Page, browser: Browser) {
@@ -90,11 +90,12 @@ async function getMarketProducts(market: string, page: Page, browser: Browser) {
   if (market === "coto") return getCotoProducts(page, browser);
   if (market === "disco") return getDiscoProducts(page, browser);
   if (market === "vea") return getVeaProducts(page, browser);
-
+  if (market === "la anonima online") return getAnonimaProducts(page, browser);
   if (market === "maxiconsumo") return getMaxiProducts(page, browser);
   await page.evaluate(() => {
     window.scrollBy(0, window.innerHeight);
   });
+
   const html: string = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -104,7 +105,6 @@ async function getMarketProducts(market: string, page: Page, browser: Browser) {
 
   if (market === "super mami") return getSupermamiProducts(html);
   if (market === "dia") return getDiaProducts(html);
-  if (market === "la anonima online") return getAnonimaProducts(html);
 }
 async function getCordiezProducts(html: string) {
   const $ = await cheerio.load(html, null, false);
@@ -114,10 +114,12 @@ async function getCordiezProducts(html: string) {
     const product = $(el);
     const title = product.find("h5").text();
     const link = product.find("a").first().attr("href") as string;
-    const price = fixStringNumber(product.find(".offer-price").text().split("$")[1].trim());
+    const price = fixStringNumber(
+      product.find(".offer-price").text().split("$")[1].trim(),
+    );
     const image = product.find(".product-content img").attr("src") as string;
 
-    products.push({title, price, image, link, market: "cordiez"});
+    products.push({ title, price, image, link, market: "cordiez" });
   });
 
   return products;
@@ -131,16 +133,36 @@ async function getHiperlibertadProducts(html: string) {
     const title = product.find("h2").text();
     const link = product.find("a").first().attr("href") as string;
     const price = fixStringNumber(
-      product.find(".styles__BestPrice-sc-1tfhldk-12").text().split("$")[1].trim(),
+      product
+        .find(".styles__BestPrice-sc-1tfhldk-12")
+        .text()
+        .split("$")[1]
+        .trim(),
     );
     const image = product.find("img").attr("src") as string;
 
-    products.push({title, price, image, link, market: "hiperlibertad"});
+    products.push({ title, price, image, link, market: "hiperlibertad" });
   });
 
   return products;
 }
-async function getAnonimaProducts(html: string) {
+async function getAnonimaProducts(page: Page, browser: Browser) {
+  await page.evaluate(() => {
+    window.scrollBy(0, window.innerHeight);
+  });
+
+  await page.$$eval("producto .item", (images) => {
+    images.forEach(async (img) => {
+      img.scrollIntoView();
+      console.log(img);
+      await page.waitForTimeout(3000);
+    });
+  });
+
+  const html = await page.evaluate(() => document.body.innerHTML);
+
+  await browser.disconnect();
+  await browser.close();
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
@@ -151,15 +173,19 @@ async function getAnonimaProducts(html: string) {
       .find("a")
       .first()
       .attr("href")}`;
-    const price = fixStringNumber(product.find(".precio").text().replace("$", ""));
-
+    const price = fixStringNumber(
+      product.find(".precio").text().replace("$", ""),
+    );
+    product.find("img").removeClass("lazyloading");
+    const imageSrc = product.find("img").attr("src");
     const image = `${
-      product.find("img").attr("src").includes("https")
+      imageSrc.includes("https")
         ? ""
         : "https://supermercado.laanonimaonline.com"
-    }${product.find("img").attr("src")}`;
+    }${imageSrc}`;
 
-    products.push({title, price, image, link, market: "la anonima online"});
+    if (price)
+      products.push({ title, price, image, link, market: "la anonima online" });
   });
 
   return products;
