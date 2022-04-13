@@ -6,7 +6,13 @@ const fixStringNumber = (number: string) => {
     4: 10000,
   };
   const isEsFormat = number.indexOf(",");
-  const [integer, decimal] = isEsFormat ? number.split(",") : number.split(".");
+  let integer, decimal;
+
+  if (isEsFormat !== -1) {
+    [integer, decimal] = number.split(",");
+  } else {
+    [integer, decimal] = number.split(".");
+  }
 
   if (!decimal) return;
   parseInt(number.replace(".", ""));
@@ -17,4 +23,4 @@ const fixStringNumber = (number: string) => {
   return fixedNumber;
 };
 
-export default fixStringNumber;
+console.log(fixStringNumber("159.83"));

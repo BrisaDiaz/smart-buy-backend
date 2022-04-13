@@ -2,6 +2,7 @@
 import httpStatus from "http-status";
 import {Request, Response} from "express";
 
+import fixStringNumber from "../utils/fixStringNumber";
 import {MARKETS, PRODUCT_PROPS} from "../constants";
 import ApiError from "../utils/ApiError";
 import catchAsync from "../utils/catchAsync";
@@ -26,8 +27,10 @@ export const trackProduct = catchAsync(async (req: Request, res: Response) => {
 });
 
 export const getTrackedProduct = catchAsync(async (req: Request, res: Response) => {
-  const {link} = req.query;
+  const {link, price} = req.query;
 
+  if (typeof price !== "string" || isNaN(parseInt(price)))
+    throw new ApiError(httpStatus.BAD_REQUEST, "Invalid price");
   if (typeof link !== "string")
     throw new ApiError(httpStatus.BAD_REQUEST, "The product link wast not provided");
 
@@ -36,7 +39,7 @@ export const getTrackedProduct = catchAsync(async (req: Request, res: Response) 
   );
 
   if (!isValidUrl) throw new ApiError(httpStatus.BAD_REQUEST, "Invalid link");
-  const results = await getProductTrackedPrices(link);
+  const results = await getProductTrackedPrices(link, fixStringNumber(price));
 
   if (!results)
     throw new ApiError(httpStatus.NOT_FOUND, "No product with the provided link was found");

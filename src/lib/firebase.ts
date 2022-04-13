@@ -1,5 +1,4 @@
 import dotenv from "dotenv";
-// Import the functions you need from the SDKs you need
 import {initializeApp} from "firebase/app";
 import {
   getFirestore,
@@ -38,28 +37,33 @@ const db = getFirestore(app);
 export async function getProductByLink(link: string) {
   const productsQuery = query(collection(db, "Products"), where("link", "==", link), limit(1));
   const productsSnapshot = await getDocs(productsQuery);
-  const product = productsSnapshot.docs.map((doc) => ({
-    ...doc.data(),
-    id: doc.id,
-    createdAt: doc.data().createdAt.toDate(),
-    updatedAt: doc.data().updatedAt.toDate(),
-  }))[0];
+
+  const product = productsSnapshot.docs.map((doc) => {
+    const docData = doc.data();
+
+    return {
+      id: doc.id as string,
+      title: docData.title as string,
+      price: docData.price as number,
+      market: docData.market as string,
+      image: docData.image as string,
+      link: docData.link as string,
+      createdAt: docData.createdAt.toDate() as Date,
+      updatedAt: docData.updatedAt.toDate() as Date,
+    };
+  })[0];
 
   return product;
 }
-export async function getProductPricesByLink(link: string) {
-  const product = await getProductByLink(link);
-
-  if (!product) return undefined;
-
-  const pricesQuery = query(collection(db, "Prices"), where("productId", "==", product.id));
+export async function getProductPriceHistory(productId: string) {
+  const pricesQuery = query(collection(db, "Prices"), where("productId", "==", productId));
   const pricesSnapshot = await getDocs(pricesQuery);
   const priceHistory = pricesSnapshot.docs.map((doc) => ({
     ...doc.data(),
     createdAt: doc.data().createdAt.toDate(),
   }));
 
-  return {product, priceHistory};
+  return priceHistory;
 }
 export async function addProduct(product: {
   title: string;

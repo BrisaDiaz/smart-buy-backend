@@ -72,7 +72,8 @@ async function configureBrowser(url: string) {
     args: minimalArgs,
   });
   const page = await browser.newPage();
-  await page.setViewport({ width: 2560, height: 6000 });
+
+  await page.setViewport({width: 2560, height: 6000});
   await page.goto(url, {
     waitUntil: "networkidle2",
     timeout: 0,
@@ -81,7 +82,7 @@ async function configureBrowser(url: string) {
     "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36",
   );
 
-  return { page, browser };
+  return {page, browser};
 }
 
 async function getMarketProducts(market: string, page: Page, browser: Browser) {
@@ -114,12 +115,10 @@ async function getCordiezProducts(html: string) {
     const product = $(el);
     const title = product.find("h5").text();
     const link = product.find("a").first().attr("href") as string;
-    const price = fixStringNumber(
-      product.find(".offer-price").text().split("$")[1].trim(),
-    );
+    const price = fixStringNumber(product.find(".offer-price").text().split("$")[1].trim());
     const image = product.find(".product-content img").attr("src") as string;
 
-    products.push({ title, price, image, link, market: "cordiez" });
+    products.push({title, price, image, link, market: "cordiez"});
   });
 
   return products;
@@ -133,15 +132,11 @@ async function getHiperlibertadProducts(html: string) {
     const title = product.find("h2").text();
     const link = product.find("a").first().attr("href") as string;
     const price = fixStringNumber(
-      product
-        .find(".styles__BestPrice-sc-1tfhldk-12")
-        .text()
-        .split("$")[1]
-        .trim(),
+      product.find(".styles__BestPrice-sc-1tfhldk-12").text().split("$")[1].trim(),
     );
     const image = product.find("img").attr("src") as string;
 
-    products.push({ title, price, image, link, market: "hiperlibertad" });
+    products.push({title, price, image, link, market: "hiperlibertad"});
   });
 
   return products;
@@ -173,19 +168,15 @@ async function getAnonimaProducts(page: Page, browser: Browser) {
       .find("a")
       .first()
       .attr("href")}`;
-    const price = fixStringNumber(
-      product.find(".precio").text().replace("$", ""),
-    );
+    const price = fixStringNumber(product.find(".precio").text().replace("$", ""));
+
     product.find("img").removeClass("lazyloading");
     const imageSrc = product.find("img").attr("src");
     const image = `${
-      imageSrc.includes("https")
-        ? ""
-        : "https://supermercado.laanonimaonline.com"
+      imageSrc.includes("https") ? "" : "https://supermercado.laanonimaonline.com"
     }${imageSrc}`;
 
-    if (price)
-      products.push({ title, price, image, link, market: "la anonima online" });
+    if (price) products.push({title, price, image, link, market: "la anonima online"});
   });
 
   return products;
@@ -429,12 +420,12 @@ async function getDiaProducts(html: string) {
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
-  $(".box-item").each((index, el) => {
+  $(".vitrine li").each((index, el) => {
     const product = $(el);
     const title = product.find(".product-name ").text().trim();
     const link = product.find(".product-name a").attr("href") as string;
 
-    const price = !product.find(".precio-unidad")
+    const price = !product.find(".best-price")
       ? undefined
       : fixStringNumber(product.find(".best-price").text().replace("$", ""));
 
@@ -466,7 +457,7 @@ async function getProducts(market: string, search: string) {
     await saveWithTtl(
       chacheKey,
       products,
-      parseInt(process.env.PRODUCT_CACHE_REVALIDATION_INTERVAL_S || "21600"),
+      parseInt(process.env.PRODUCTS_CACHE_REVALIDATION_INTERVAL_S || "21600"),
     );
 
     return products;

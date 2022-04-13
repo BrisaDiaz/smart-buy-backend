@@ -1,10 +1,10 @@
 import dotenv from "dotenv";
-import {CronJob} from "cron";
 
+import {saveWithTtl, get} from "../lib/redis";
 import {Product} from "../interfaces";
 import {
   getProductByLink,
-  getProductPricesByLink,
+  getProductPriceHistory,
   addProduct,
   updateProductPrice,
 } from "../lib/firebase";
@@ -18,30 +18,39 @@ export async function initProductTrack(product: Product) {
   if (productFound) return productFound;
   const createdProduct = await addProduct(product);
 
-  makePeriodicPriceUpdates(product.link, product.market);
-
   return createdProduct;
 }
 
-export async function getProductTrackedPrices(link: string) {
-  const foundProduct = await getProductPricesByLink(link);
+export async function getProductTrackedPrices(link: string, price?: number) {
+  const key = `${link}-${price}`;
 
-  return foundProduct;
+  const cacheData = await get(key);
+
+  if (cacheData) return cacheData;
+
+  const product = await getProductByLink(link);
+
+  if (!product) return undefined;
+  const currentPrice = price || (await getProductPrice(link, product.market));
+
+  if (product.price - currentPrice !== 0) await makePriceUpdates(product.id, currentPrice);
+  const priceHistory = await getProductPriceHistory(product.id);
+
+  const data = {product, priceHistory};
+
+  await saveWithTtl(
+    key,
+    data,
+    parseInt(process.env.TRACKED_PRODUCT_CACHE_REVALIDATION_INTERVAL_S || "21600"),
+  );
+
+  return data;
 }
 
-function makePeriodicPriceUpdates(link: string, market: string) {
-  const job = new CronJob(process.env.PRICE_CHECK_CRON_INTERVAL || "0 */6 * * *", async () => {
-    try {
-      const currentPrice = await getProductPrice(link, market);
-      const foundProduct = await getProductByLink(link);
-
-      if (currentPrice && foundProduct) {
-        await updateProductPrice(foundProduct.id, currentPrice);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  });
-
-  job.start();
+async function makePriceUpdates(productId: string, currentPrice: number) {
+  try {
+    await updateProductPrice(productId, currentPrice);
+  } catch (e) {
+    console.log(e);
+  }
 }
