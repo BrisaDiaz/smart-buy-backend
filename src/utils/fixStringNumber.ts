@@ -6,15 +6,19 @@ const fixStringNumber = (number: string) => {
     4: 10000,
   };
   const isEsFormat = number.indexOf(",");
-  const [integer, decimal] = isEsFormat ? number.split(",") : number.split(".");
+  let integer, decimal;
 
-  if (!decimal) return;
-  parseInt(number.replace(".", ""));
+  if (isEsFormat !== -1) {
+    [integer, decimal] = number.split(",");
+  } else {
+    [integer, decimal] = number.split(".");
+  }
+
+  if (!decimal) return parseInt(integer);
 
   const fixedNumber =
-    Math.floor(parseInt(integer.replace(".", ""))) + parseInt(decimal) / units[decimal.length];
+    Math.floor(parseInt(integer)) + parseInt(decimal) / units[decimal.length];
 
   return fixedNumber;
 };
-
 export default fixStringNumber;
