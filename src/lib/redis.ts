@@ -26,6 +26,9 @@ export async function saveWithTtl(key: string, value: unknown, ttlSeconds: numbe
     NX: true,
   });
 }
+export async function remove(key: string) {
+  return await client.del(key);
+}
 
 export const connectRedis = async () => await client.connect();
 export const disconnectRedis = async () => await client.disconnect();

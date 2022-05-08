@@ -204,19 +204,15 @@ async function getVeaProducts(page: Page, browser: Browser) {
     const product = $(el);
 
     const title = product.find("h2").text().trim();
-    const link = ("https://www.vea.com.ar" +
-      product.find("a").attr("href")) as string;
+    const link = ("https://www.vea.com.ar" + product.find("a").attr("href")) as string;
 
     const price = fixStringNumber(
-      product
-        .find(".vtex-flex-layout-0-x-flexRow--sellingPrice-discount ")
-        .text()
-        .replace("$", ""),
+      product.find(".vtex-flex-layout-0-x-flexRow--sellingPrice-discount ").text().replace("$", ""),
     );
 
     const image = product.find("img").attr("src") as string;
 
-    products.push({ title, price, image, link, market: "vea" });
+    products.push({title, price, image, link, market: "vea"});
   });
 
   return products;
@@ -246,16 +242,13 @@ async function getDiscoProducts(page: Page, browser: Browser) {
     const product = $(el);
 
     const title = product.find("h2").text();
-    const link = ("https://www.disco.com.ar" +
-      product.find("a").attr("href")) as string;
+    const link = ("https://www.disco.com.ar" + product.find("a").attr("href")) as string;
 
-    const price = fixStringNumber(
-      product.find(".contenedor-precio").text().replace("$", ""),
-    );
+    const price = fixStringNumber(product.find(".contenedor-precio").text().replace("$", ""));
 
     const image = product.find("img").attr("src") as string;
 
-    products.push({ title, price, image, link, market: "disco" });
+    products.push({title, price, image, link, market: "disco"});
   });
 
   return products;

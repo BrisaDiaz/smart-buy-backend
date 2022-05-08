@@ -16,9 +16,9 @@ const fixStringNumber = (number: string) => {
 
   if (!decimal) return parseInt(integer);
 
-  const fixedNumber =
-    Math.floor(parseInt(integer)) + parseInt(decimal) / units[decimal.length];
+  const fixedNumber = Math.floor(parseInt(integer)) + parseInt(decimal) / units[decimal.length];
 
   return fixedNumber;
 };
+
 export default fixStringNumber;

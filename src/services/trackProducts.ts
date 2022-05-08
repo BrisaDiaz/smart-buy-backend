@@ -33,7 +33,12 @@ export async function getProductTrackedPrices(link: string, price?: number) {
   if (!product) return undefined;
   const currentPrice = price || (await getProductPrice(link, product.market));
 
-  if (product.price - currentPrice !== 0) await makePriceUpdates(product.id, currentPrice);
+  if (product.price - currentPrice !== 0) {
+    const newPriceRecord = await makePriceUpdates(product.id, currentPrice);
+
+    product.updatedAt = newPriceRecord.createdAt;
+    product.price = newPriceRecord.value
+  }
   const priceHistory = await getProductPriceHistory(product.id);
 
   const data = {product, priceHistory};
@@ -49,7 +54,9 @@ export async function getProductTrackedPrices(link: string, price?: number) {
 
 async function makePriceUpdates(productId: string, currentPrice: number) {
   try {
-    await updateProductPrice(productId, currentPrice);
+    const priceRecord = await updateProductPrice(productId, currentPrice);
+
+    return priceRecord;
   } catch (e) {
     console.log(e);
   }

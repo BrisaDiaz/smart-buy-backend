@@ -98,11 +98,17 @@ export async function updateProductPrice(id: string, price: number) {
     price,
     updatedAt: Timestamp.now(),
   });
-  await addDoc(collection(db, "Prices"), {
+  const createdPrice = await addDoc(collection(db, "Prices"), {
     value: price,
     productId: id,
     createdAt: Timestamp.now(),
   });
+  const PriceDoc = await getDoc(createdPrice);
+  const docData = PriceDoc.data() as DocumentData;
 
-  return true;
+  return {
+    ...docData,
+    value: docData.value,
+    createdAt: docData.createdAt.toDate(),
+  };
 }
