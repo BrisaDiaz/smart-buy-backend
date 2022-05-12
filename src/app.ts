@@ -24,7 +24,7 @@ if (process.env.NODE_ENV === "production") {
         callback(new ApiError(httpStatus.FORBIDDEN, "Not allowed by CORS"));
       }
     },
-    methods: "GET,HEAD,POST",
+    methods: "GET,HEAD,POST,PUT",
     optionsSuccessStatus: 204,
   };
 
