@@ -55,6 +55,23 @@ export async function getProductByLink(link: string) {
 
   return product;
 }
+export async function getProductByID(id: string) {
+  const productRef = doc(db, "Products", id);
+  const productSnapshot = await getDoc(productRef);
+
+  const docData = productSnapshot.data();
+
+  return {
+    id: productRef.id as string,
+    title: docData.title as string,
+    price: docData.price as number,
+    market: docData.market as string,
+    image: docData.image as string,
+    link: docData.link as string,
+    createdAt: docData.createdAt.toDate() as Date,
+    updatedAt: docData.updatedAt.toDate() as Date,
+  };
+}
 export async function getProductPriceHistory(productId: string) {
   const pricesQuery = query(collection(db, "Prices"), where("productId", "==", productId));
   const pricesSnapshot = await getDocs(pricesQuery);

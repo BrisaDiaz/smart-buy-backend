@@ -216,6 +216,67 @@
             }
           }
         }
+      },
+      "put": {
+        "description": "Update tracked product price",
+        "parameters": [
+          {
+            "name": "link",
+            "in": "query",
+            "required": true,
+            "description": "tracked product source link",
+            "schema": { "type": "string" }
+          }
+        ],
+        "requestBody": {
+          "required": false,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "price": {
+                    "type": "number"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "ok",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "product": {
+                      "$ref": "#/definitions/TrackedProduct"
+                    },
+                    "priceHistory": {
+                      "type": "array",
+                      "items": {
+                        "$ref": "#/definitions/TrackedPrice"
+                      }
+                    }
+                  }
+                }
+              }
+            }
+          }
+        },
+
+        "400": {
+          "description": "Product link was not provided / Invalid Product link / Invalid price format",
+          "content": {
+            "text/plain": {
+              "schema": {
+                "type": "string"
+              }
+            }
+          }
+        }
       }
     }
   },
