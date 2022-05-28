@@ -14,8 +14,9 @@ import {
   updateDoc,
   DocumentSnapshot,
   DocumentData,
+  orderBy,
 } from "firebase/firestore";
-dotenv.config({path: ".env"});
+dotenv.config({ path: ".env" });
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -35,7 +36,11 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export async function getProductByLink(link: string) {
-  const productsQuery = query(collection(db, "Products"), where("link", "==", link), limit(1));
+  const productsQuery = query(
+    collection(db, "Products"),
+    where("link", "==", link),
+    limit(1),
+  );
   const productsSnapshot = await getDocs(productsQuery);
 
   const product = productsSnapshot.docs.map((doc) => {
@@ -73,7 +78,11 @@ export async function getProductByID(id: string) {
   };
 }
 export async function getProductPriceHistory(productId: string) {
-  const pricesQuery = query(collection(db, "Prices"), where("productId", "==", productId));
+  const pricesQuery = query(
+    collection(db, "Prices"),
+    where("productId", "==", productId),
+    orderBy("createdAt", "desc"),
+  );
   const pricesSnapshot = await getDocs(pricesQuery);
   const priceHistory = pricesSnapshot.docs.map((doc) => ({
     ...doc.data(),
