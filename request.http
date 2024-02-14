@@ -4,14 +4,14 @@ content-type: application/json
 
 {
       "product": {
-      "title": "ARROZ MAROLIO DOBLE 500 GR",
-      "price": 1343.89,
+      "title": "MARUCHA DE TERNERA ASISTIDA X KG.",
+      "price": 6545,
       "image": {
-        "src": "https://maxiconsumo.com/media/catalog/product/cache/8313a15b471f948db4d9d07d4a9f04a2/1/9/19002.jpg",
-        "alt": "ARROZ MAROLIO DOBLE 500 GR"
+        "src": "https://statics.dinoonline.com.ar/imagenes/full_600x600_ma/3400080_f.jpg",
+        "alt": "MARUCHA DE TERNERA ASISTIDA X KG."
       },
-      "link": "https://maxiconsumo.com/sucursal_capital/arroz-marolio-doble-500-gr-19002.html",
-      "market": "maxiconsumo"
+      "link": "https://www.dinoonline.com.ar/super/producto/marucha-de-ternera-asistida-x-kg/_/A-3400080-3400080-s",
+      "market": "super mami"
     }
 }
 ###
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://maxiconsumo.com/sucursal_capital/arroz-marolio-doble-500-gr-19002.html
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.dinoonline.com.ar/super/producto/marucha-de-ternera-asistida-x-kg/_/A-3400080-3400080-s

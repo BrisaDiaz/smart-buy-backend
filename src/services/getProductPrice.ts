@@ -246,7 +246,7 @@ async function getCotoProductPrice(page: Page, browser: Browser) {
   return fixStringNumber(matchPrice);
 }
 async function getMaxiProductPrice(page: Page, browser: Browser) {
-    const priceSelector = "[data-price-type='finalPrice']  .price";
+  const priceSelector = "[data-price-type='finalPrice']  .price";
   const notFoundSelector = ".img-404";
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
@@ -270,27 +270,16 @@ async function getMaxiProductPrice(page: Page, browser: Browser) {
 }
 
 async function getSupermamiProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector('[id="productLandingPage"]');
-  if (!(await page.$('[id="productLandingPage"]'))) {
-    await browser.disconnect();
-    await browser.close();
+  const priceSelector = "[id='productLandingPage'] .precio-unidad span";
 
-    return undefined;
-  }
-
+  await page.waitForSelector(priceSelector);
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber(
-    $('[id="productLandingPage"]')
-      .find(".precio-unidad span")
-      .text()
-      .replace("$", "")
-      .replace(".", ","),
-  );
+  const price = fixStringNumber($(priceSelector).text().trim().replace("$", "").replace(",", ""));
 
   return price;
 }
