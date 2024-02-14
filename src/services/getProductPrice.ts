@@ -172,8 +172,11 @@ async function getDiscoProductPrice(page: Page, browser: Browser) {
   return price;
 }
 async function getJumboProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".skuBestPrice , .empty-search-message");
-  if (await page.$(".empty-search-message")) {
+  const productSelector = ".vtex-flex-layout-0-x-flexColChild--shelf-main-price-box span";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--row-opss-notfound"
+
+  await page.waitForSelector(`${productSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
@@ -186,7 +189,7 @@ async function getJumboProductPrice(page: Page, browser: Browser) {
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber($(".skuBestPrice").text().replace("$", ""));
+  const price = fixStringNumber($(productSelector).text().replace("$", ""));
 
   return price;
 }

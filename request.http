@@ -34,4 +34,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.cotodigital3.com.ar/sitios/cdigi/producto/-chocolate-50-cacao-arcor-fwp-25-grm/_/A-00474736-00474736-200 
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.jumbo.com.ar/mayonesa-clasica-hellmanns-475-gr/p
