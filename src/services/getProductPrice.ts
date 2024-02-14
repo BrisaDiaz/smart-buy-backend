@@ -284,8 +284,11 @@ async function getSupermamiProductPrice(page: Page, browser: Browser) {
   return price;
 }
 async function getDiaProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".contenedor-precio , .render-route-store-not-found-product");
-  if (await page.$(".render-route-store-not-found-product")) {
+  const priceSelector = ".vtex-product-price-1-x-currencyContainer";
+  const notFoundSelector = ".render-route-store-not-found-product";
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
@@ -298,21 +301,29 @@ async function getDiaProductPrice(page: Page, browser: Browser) {
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber($(".contenedor-precio span").first().text().replace("$", ""));
+  const price = fixStringNumber($(priceSelector).first().text().replace("$", "").replace(".", ""));
 
   return price;
 }
 async function getAnonimaPrice(page: Page, browser: Browser) {
+  const priceSelector = ".precio.destacado";
+  const notFoundSelector = '[src="mantenimiento_laol.jpg"]';
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
+    await browser.disconnect();
+    await browser.close();
+
+    return undefined;
+  }
+
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price =
-    $("span.precio").length > 0
-      ? fixStringNumber($("span.precio").first().text().replace("$", "").trim())
-      : undefined;
+  const price = fixStringNumber($(priceSelector).first().text().replace("$", "").replace(".", ""));
 
   return price;
 }

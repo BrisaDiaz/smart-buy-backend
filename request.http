@@ -4,16 +4,16 @@ content-type: application/json
 
 {
       "product": {
-      "title": "MARUCHA DE TERNERA ASISTIDA X KG.",
-      "price": 6545,
+      "title": "Pan de Mesa Blanco Chico Bimbo x 400 g.",
+      "price":  3025,
       "image": {
-        "src": "https://statics.dinoonline.com.ar/imagenes/full_600x600_ma/3400080_f.jpg",
-        "alt": "MARUCHA DE TERNERA ASISTIDA X KG."
+        "src": "https://d1on8qs0xdu5jz.cloudfront.net/web/images/productos/b/0000024000/24614.jpg",
+        "alt": "Pan de Mesa Blanco Chico Bimbo x 400 g."
       },
-      "link": "https://www.dinoonline.com.ar/super/producto/marucha-de-ternera-asistida-x-kg/_/A-3400080-3400080-s",
-      "market": "super mami"
+      "link": "https://supermercado.laanonimaonline.com/frescos/panificados/panes-de-molde-y-tortillas/pan-de-mesa-blanco-chico-bimbo-x-400-g/art_24614/",
+      "market": "la anonima online"
     }
-}
+} 
 ###
 
 GET  http://localhost:4000/api/v1/market/search?query=aceite+girasol&market=cordiez
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.dinoonline.com.ar/super/producto/marucha-de-ternera-asistida-x-kg/_/A-3400080-3400080-s
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://supermercado.laanonimaonline.com/frescos/panificados/panes-de-molde-y-tortillas/pan-de-mesa-blanco-chico-bimbo-x-400-g/art_24614/
