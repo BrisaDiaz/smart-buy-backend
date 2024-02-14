@@ -10,8 +10,8 @@ content-type: application/json
         "src": "https://maxiconsumo.com/media/catalog/product/cache/8313a15b471f948db4d9d07d4a9f04a2/1/9/19002.jpg",
         "alt": "ARROZ MAROLIO DOBLE 500 GR"
       },
-      "link": "https://www.hiperlibertad.com.ar/galletas-terrabusi-variedad-nuevo-mix-x-590-gr/p",
-      "market": "hiperlibertad"
+      "link": "https://maxiconsumo.com/sucursal_capital/arroz-marolio-doble-500-gr-19002.html",
+      "market": "maxiconsumo"
     }
 }
 ###
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.hiperlibertad.com.ar/galletas-terrabusi-variedad-nuevo-mix-x-590-gr/p
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://maxiconsumo.com/sucursal_capital/arroz-marolio-doble-500-gr-19002.html
