@@ -172,10 +172,12 @@ async function getDiscoProductPrice(page: Page, browser: Browser) {
   return price;
 }
 async function getJumboProductPrice(page: Page, browser: Browser) {
-  const productSelector = ".vtex-flex-layout-0-x-flexColChild--shelf-main-price-box span";
-  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--row-opss-notfound"
+  const priceSelector =
+    '.vtex-flex-layout-0-x-flexColChild--shelf-main-price-box span';
+  const notFoundSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--row-opss-notfound';
 
-  await page.waitForSelector(`${productSelector}, ${notFoundSelector}`);
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
@@ -189,15 +191,18 @@ async function getJumboProductPrice(page: Page, browser: Browser) {
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber($(productSelector).text().replace("$", ""));
+  const price = fixStringNumber($(priceSelector).text().replace('$', ''));
 
   return price;
 }
 async function getCarrefourProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(
-    ".lyracons-carrefourarg-product-price-1-x-sellingPriceValue, .tex-flex-layout-0-x-flexRow--notFoundRow1",
-  );
-  if (await page.$(".tex-flex-layout-0-x-flexRow--notFoundRow1")) {
+  const priceSelector =
+    '.valtech-carrefourar-product-price-0-x-currencyContainer';
+  const notFoundSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--homeRowContent';
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
@@ -205,19 +210,13 @@ async function getCarrefourProductPrice(page: Page, browser: Browser) {
   }
 
   const html = await page.evaluate(() => document.body.innerHTML);
-
   await browser.disconnect();
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
 
   const price = fixStringNumber(
-    $(".vtex-flex-layout-0-x-flexRow--product-view-product-main")
-      .find(".lyracons-carrefourarg-product-price-1-x-sellingPrice")
-      .first()
-      .text()
-      .replace("$", "")
-      .replace(".", ""),
+    $(priceSelector).text().replace('$', '').replace('.', ''),
   );
 
   return price;

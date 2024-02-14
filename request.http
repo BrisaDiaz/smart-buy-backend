@@ -4,14 +4,14 @@ content-type: application/json
 
 {
       "product": {
-      "title": "Mayonesa Clasica Hellmanns 475 Gr",
-      "price": 965,
+      "title": "Queso cremoso La Paulina x kg.",
+      "price": 4700,
       "image": {
-        "src": "https://jumboargentina.vtexassets.com/arquivos/ids/806713-800-auto?v=638403358986700000&width=800&height=auto&aspect=true",
-        "alt": "Mayonesa Clasica Hellmanns 475 Gr"
+        "src": "https://carrefourar.vtexassets.com/arquivos/ids/364370-600-auto?v=638264048747430000&width=600&height=auto&aspect=true",
+        "alt": "Queso cremoso La Paulina x kg."
       },
-      "link": "https://www.jumbo.com.ar/mayonesa-clasica-hellmanns-475-gr/p",
-      "market": "jumbo"
+      "link": "https://www.carrefour.com.ar/queso-cremoso-la-paulina-x-kg-647989/p",
+      "market": "carrefour"
     }
 }
 ###
@@ -19,7 +19,6 @@ content-type: application/json
 GET  http://localhost:4000/api/v1/market/search?query=aceite+girasol&market=cordiez
 ###
 
-POST http://localhost:4000/api/v1/tracker/products  HTTP/1.1
 content-type: application/json
 
 {
@@ -34,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.jumbo.com.ar/mayonesa-clasica-hellmanns-475-gr/p
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.carrefour.com.ar/queso-cremoso-la-paulina-x-kg-647989/p
