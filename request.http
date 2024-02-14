@@ -4,14 +4,14 @@ content-type: application/json
 
 {
       "product": {
-      "title": "Atun Al Natural La Campagnola 170 Gr",
-      "price": 2999,
+      "title": "ARROZ MAROLIO DOBLE 500 GR",
+      "price": 1343.89,
       "image": {
-        "src": "https://arcordiezb2c.vteximg.com.br/arquivos/ids/173297/Atun-Al-Natural-La-Campagnola-170-Gr-1-12729.jpg?v=637950729936700000",
-        "alt": "Atun Al Natural La Campagnola 170 Gr"
+        "src": "https://maxiconsumo.com/media/catalog/product/cache/8313a15b471f948db4d9d07d4a9f04a2/1/9/19002.jpg",
+        "alt": "ARROZ MAROLIO DOBLE 500 GR"
       },
-      "link": "https://www.cordiez.com.ar/atun-al-natural-la-campagnola-170-gr/p",
-      "market": "cordiez"
+      "link": "https://www.hiperlibertad.com.ar/galletas-terrabusi-variedad-nuevo-mix-x-590-gr/p",
+      "market": "hiperlibertad"
     }
 }
 ###
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.cordiez.com.ar/atun-al-natural-la-campagnola-170-gr/p
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.hiperlibertad.com.ar/galletas-terrabusi-variedad-nuevo-mix-x-590-gr/p

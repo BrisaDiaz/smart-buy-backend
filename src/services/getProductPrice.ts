@@ -114,8 +114,11 @@ async function getCordiezProductPrice(page: Page, browser: Browser) {
   return price;
 }
 async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".styles__BestPrice-ylrwvm-0, .tyles__NotFound-sc-1wrfq72-0");
-  if (await page.$(".tyles__NotFound-sc-1wrfq72-0")) {
+  const priceSelector = ".vtex-product-price-1-x-currencyContainer--pdp-selling-price";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--not-found-product-container";
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
@@ -126,9 +129,7 @@ async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = $(".contenedor-precio span")
-    ? fixStringNumber($(" .styles__BestPrice-ylrwvm-0").first().text().replace("$", ""))
-    : undefined;
+  const price = fixStringNumber($(priceSelector).first().text().replace("$", "").replace(".", ""));
 
   return price;
 }
