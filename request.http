@@ -4,14 +4,14 @@ content-type: application/json
 
 {
       "product": {
-      "title": "Queso cremoso La Paulina x kg.",
-      "price": 4700,
+      "title": "Yerba Mate Playadito Suave 1 Kg",
+      "price": 3950,
       "image": {
-        "src": "https://carrefourar.vtexassets.com/arquivos/ids/364370-600-auto?v=638264048747430000&width=600&height=auto&aspect=true",
-        "alt": "Queso cremoso La Paulina x kg."
+        "src": "https://jumboargentina.vtexassets.com/arquivos/ids/711224-800-auto?v=637938633804770000&width=800&height=auto&aspect=true",
+        "alt": "Yerba Mate Playadito Suave 1 Kg"
       },
-      "link": "https://www.carrefour.com.ar/queso-cremoso-la-paulina-x-kg-647989/p",
-      "market": "carrefour"
+      "link": "https://www.vea.com.ar/yerba-mate-playadito-suave-1-kg/p",
+      "market": "vea"
     }
 }
 ###
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.carrefour.com.ar/queso-cremoso-la-paulina-x-kg-647989/p
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.vea.com.ar/yerba-mate-playadito-suave-1-kg/p

@@ -129,8 +129,13 @@ async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
 }
 
 async function getVeaProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".contenedor-precio span, .vtex-search-result-3-x-notFound--layout");
-  if (await page.$(".vtex-search-result-3-x-notFound--layout")) {
+  const priceSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span';
+  const notFoundSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--row-opss-notfound';
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
@@ -141,15 +146,16 @@ async function getVeaProductPrice(page: Page, browser: Browser) {
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = $(".contenedor-precio span")
-    ? fixStringNumber($(" .contenedor-precio span").first().text().replace("$", ""))
-    : undefined;
+  const price = fixStringNumber(
+    $(priceSelector).first().text().replace('$', '').replace('.', ''),
+  );
 
   return price;
 }
 async function getDiscoProductPrice(page: Page, browser: Browser) {
-  const priceSelector = ".vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span";
-  const notFoundSelector = ".vtex-flex-layout-0-x-flexRow--not-found-page";
+  const priceSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span';
+  const notFoundSelector = '.vtex-flex-layout-0-x-flexRow--not-found-page';
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
@@ -166,7 +172,7 @@ async function getDiscoProductPrice(page: Page, browser: Browser) {
   const $ = await cheerio.load(html, null, false);
   const priceContainer = $(priceSelector);
   const price = priceContainer
-    ? fixStringNumber(priceContainer.first().text().replace("$", ""))
+    ? fixStringNumber(priceContainer.first().text().replace('$', ''))
     : undefined;
 
   return price;
@@ -210,6 +216,7 @@ async function getCarrefourProductPrice(page: Page, browser: Browser) {
   }
 
   const html = await page.evaluate(() => document.body.innerHTML);
+
   await browser.disconnect();
   await browser.close();
 
