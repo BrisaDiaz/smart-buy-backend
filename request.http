@@ -4,14 +4,14 @@ content-type: application/json
 
 {
       "product": {
-      "title": "Yerba Mate Playadito Suave 1 Kg",
-      "price": 3950,
+      "title": "Atun Al Natural La Campagnola 170 Gr",
+      "price": 2999,
       "image": {
-        "src": "https://jumboargentina.vtexassets.com/arquivos/ids/711224-800-auto?v=637938633804770000&width=800&height=auto&aspect=true",
-        "alt": "Yerba Mate Playadito Suave 1 Kg"
+        "src": "https://arcordiezb2c.vteximg.com.br/arquivos/ids/173297/Atun-Al-Natural-La-Campagnola-170-Gr-1-12729.jpg?v=637950729936700000",
+        "alt": "Atun Al Natural La Campagnola 170 Gr"
       },
-      "link": "https://www.vea.com.ar/yerba-mate-playadito-suave-1-kg/p",
-      "market": "vea"
+      "link": "https://www.cordiez.com.ar/atun-al-natural-la-campagnola-170-gr/p",
+      "market": "cordiez"
     }
 }
 ###
@@ -33,4 +33,4 @@ content-type: application/json
     }
 }
 ###
-PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.vea.com.ar/yerba-mate-playadito-suave-1-kg/p
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.cordiez.com.ar/atun-al-natural-la-campagnola-170-gr/p

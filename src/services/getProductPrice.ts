@@ -92,19 +92,24 @@ async function getMarketProductPrice(market: string, page: Page, browser: Browse
   if (market === "la anonima online") return getAnonimaPrice(page, browser);
 }
 async function getCordiezProductPrice(page: Page, browser: Browser) {
-  if (!(await page.$(".shop-single"))) {
+  const priceSelector = ".offer-price";
+  const notFoundSelector = ".resultado-busca";
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
     return undefined;
   }
+
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
 
-  const price = fixStringNumber($(".offer-price").first().text().replace("$", ""));
+  const price = fixStringNumber($(priceSelector).first().text().replace("$", "").replace(".", ""));
 
   return price;
 }
@@ -129,10 +134,8 @@ async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
 }
 
 async function getVeaProductPrice(page: Page, browser: Browser) {
-  const priceSelector =
-    '.vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span';
-  const notFoundSelector =
-    '.vtex-flex-layout-0-x-flexRowContent--row-opss-notfound';
+  const priceSelector = ".vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--row-opss-notfound";
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
@@ -146,16 +149,13 @@ async function getVeaProductPrice(page: Page, browser: Browser) {
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber(
-    $(priceSelector).first().text().replace('$', '').replace('.', ''),
-  );
+  const price = fixStringNumber($(priceSelector).first().text().replace("$", "").replace(".", ""));
 
   return price;
 }
 async function getDiscoProductPrice(page: Page, browser: Browser) {
-  const priceSelector =
-    '.vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span';
-  const notFoundSelector = '.vtex-flex-layout-0-x-flexRow--not-found-page';
+  const priceSelector = ".vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRow--not-found-page";
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
@@ -172,16 +172,14 @@ async function getDiscoProductPrice(page: Page, browser: Browser) {
   const $ = await cheerio.load(html, null, false);
   const priceContainer = $(priceSelector);
   const price = priceContainer
-    ? fixStringNumber(priceContainer.first().text().replace('$', ''))
+    ? fixStringNumber(priceContainer.first().text().replace("$", ""))
     : undefined;
 
   return price;
 }
 async function getJumboProductPrice(page: Page, browser: Browser) {
-  const priceSelector =
-    '.vtex-flex-layout-0-x-flexColChild--shelf-main-price-box span';
-  const notFoundSelector =
-    '.vtex-flex-layout-0-x-flexRowContent--row-opss-notfound';
+  const priceSelector = ".vtex-flex-layout-0-x-flexColChild--shelf-main-price-box span";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--row-opss-notfound";
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
@@ -197,15 +195,13 @@ async function getJumboProductPrice(page: Page, browser: Browser) {
   await browser.close();
 
   const $ = await cheerio.load(html, null, false);
-  const price = fixStringNumber($(priceSelector).text().replace('$', ''));
+  const price = fixStringNumber($(priceSelector).text().replace("$", ""));
 
   return price;
 }
 async function getCarrefourProductPrice(page: Page, browser: Browser) {
-  const priceSelector =
-    '.valtech-carrefourar-product-price-0-x-currencyContainer';
-  const notFoundSelector =
-    '.vtex-flex-layout-0-x-flexRowContent--homeRowContent';
+  const priceSelector = ".valtech-carrefourar-product-price-0-x-currencyContainer";
+  const notFoundSelector = ".vtex-flex-layout-0-x-flexRowContent--homeRowContent";
 
   await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
   if (await page.$(notFoundSelector)) {
@@ -222,9 +218,7 @@ async function getCarrefourProductPrice(page: Page, browser: Browser) {
 
   const $ = await cheerio.load(html, null, false);
 
-  const price = fixStringNumber(
-    $(priceSelector).text().replace('$', '').replace('.', ''),
-  );
+  const price = fixStringNumber($(priceSelector).text().replace("$", "").replace(".", ""));
 
   return price;
 }
