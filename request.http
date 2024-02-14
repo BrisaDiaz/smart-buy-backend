@@ -19,9 +19,6 @@ content-type: application/json
 GET  http://localhost:4000/api/v1/market/search?query=aceite+girasol&market=cordiez
 ###
 
-GET  http://localhost:4000/api/v1/tracker/products?link=https://www.disco.com.ar/aceite-canuelas-de-girasol-x-900-ml/p&price=173.53
-###
-
 POST http://localhost:4000/api/v1/tracker/products  HTTP/1.1
 content-type: application/json
 
@@ -37,4 +34,4 @@ content-type: application/json
     }
 }
 ###
-GET  http://localhost:4000/api/v1/tracker/products?link=https://www.disco.com.ar/aceite-canuelas-de-girasol-x-900-ml/p&price=159.83
+PUT  http://localhost:4000/api/v1/tracker/products?link=https://www.disco.com.ar/aceite-de-girasol-canuelas-900-ml/p   

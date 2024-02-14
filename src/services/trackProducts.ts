@@ -31,9 +31,12 @@ export async function updateProductPriceHistory(link: string, price?: number) {
     currentPrice = price;
   } else {
     currentPrice = await getProductPrice(product.link, product.market);
+    if (!currentPrice) {
+      console.log(`Error: Current price retrial fail. link: ${product.link}`);
+    }
   }
 
-  if (product.price - currentPrice !== 0) {
+  if (currentPrice && product.price - currentPrice !== 0) {
     const newPriceRecord = await addProductPriceVariation(product.id, currentPrice);
 
     product.updatedAt = newPriceRecord.createdAt;

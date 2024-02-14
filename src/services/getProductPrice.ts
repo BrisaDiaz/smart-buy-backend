@@ -46,49 +46,58 @@ const minimalArgs = [
 ];
 
 async function configureBrowser(url: string) {
-  const browser = await puppeteer.launch({
-    headless: true,
-    args: minimalArgs,
-  });
+  const browser = await puppeteer.launch(
+    process.env.NODE_ENV === 'production'
+      ? {
+          headless: true,
+          args: minimalArgs,
+        }
+      : { headless: false },
+  );
   const page = await browser.newPage();
 
-  page.setViewport({width: 1366, height: 768});
+  page.setViewport({ width: 1366, height: 768 });
   await page.goto(url, {
-    waitUntil: "networkidle2",
+    waitUntil: 'networkidle2',
     timeout: 0,
   });
   await page.setRequestInterception(true);
 
-  page.on("request", async (request) => {
+  page.on('request', async (request) => {
     if (
-      request.resourceType() === "stylesheet" ||
-      request.resourceType() === "image" ||
-      request.resourceType() === "media" ||
-      request.url().includes("google")
+      request.resourceType() === 'stylesheet' ||
+      request.resourceType() === 'image' ||
+      request.resourceType() === 'media' ||
+      request.url().includes('google')
     )
       await request.abort();
     else await request.continue();
   });
 
-  return {page, browser};
+  return { page, browser };
 }
 
-async function getMarketProductPrice(market: string, page: Page, browser: Browser) {
-  if (market === "jumbo") return getJumboProductPrice(page, browser);
-  if (market === "carrefour") return getCarrefourProductPrice(page, browser);
-  if (market === "coto") return getCotoProductPrice(page, browser);
-  if (market === "disco") return getDiscoProductPrice(page, browser);
-  if (market === "vea") return getVeaProductPrice(page, browser);
+async function getMarketProductPrice(
+  market: string,
+  page: Page,
+  browser: Browser,
+) {
+  if (market === 'jumbo') return getJumboProductPrice(page, browser);
+  if (market === 'carrefour') return getCarrefourProductPrice(page, browser);
+  if (market === 'coto') return getCotoProductPrice(page, browser);
+  if (market === 'disco') return getDiscoProductPrice(page, browser);
+  if (market === 'vea') return getVeaProductPrice(page, browser);
 
-  if (market === "cordiez") return getCordiezProductPrice(page, browser);
-  if (market === "hiperlibertad") return getHiperlibertadProductPrice(page, browser);
-  if (market === "maxiconsumo") return getMaxiProductPrice(page, browser);
-  if (market === "super mami") return getSupermamiProductPrice(page, browser);
-  if (market === "dia") return getDiaProductPrice(page, browser);
-  if (market === "la anonima online") return getAnonimaPrice(page, browser);
+  if (market === 'cordiez') return getCordiezProductPrice(page, browser);
+  if (market === 'hiperlibertad')
+    return getHiperlibertadProductPrice(page, browser);
+  if (market === 'maxiconsumo') return getMaxiProductPrice(page, browser);
+  if (market === 'super mami') return getSupermamiProductPrice(page, browser);
+  if (market === 'dia') return getDiaProductPrice(page, browser);
+  if (market === 'la anonima online') return getAnonimaPrice(page, browser);
 }
 async function getCordiezProductPrice(page: Page, browser: Browser) {
-  if (!(await page.$(".shop-single"))) {
+  if (!(await page.$('.shop-single'))) {
     await browser.disconnect();
     await browser.close();
 
@@ -100,13 +109,17 @@ async function getCordiezProductPrice(page: Page, browser: Browser) {
   await browser.close();
   const $ = await cheerio.load(html, null, false);
 
-  const price = fixStringNumber($(".offer-price").first().text().replace("$", ""));
+  const price = fixStringNumber(
+    $('.offer-price').first().text().replace('$', ''),
+  );
 
   return price;
 }
 async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".styles__BestPrice-ylrwvm-0, .tyles__NotFound-sc-1wrfq72-0");
-  if (await page.$(".tyles__NotFound-sc-1wrfq72-0")) {
+  await page.waitForSelector(
+    '.styles__BestPrice-ylrwvm-0, .tyles__NotFound-sc-1wrfq72-0',
+  );
+  if (await page.$('.tyles__NotFound-sc-1wrfq72-0')) {
     await browser.disconnect();
     await browser.close();
 
@@ -117,16 +130,20 @@ async function getHiperlibertadProductPrice(page: Page, browser: Browser) {
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = $(".contenedor-precio span")
-    ? fixStringNumber($(" .styles__BestPrice-ylrwvm-0").first().text().replace("$", ""))
+  const price = $('.contenedor-precio span')
+    ? fixStringNumber(
+        $(' .styles__BestPrice-ylrwvm-0').first().text().replace('$', ''),
+      )
     : undefined;
 
   return price;
 }
 
 async function getVeaProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".contenedor-precio span, .vtex-search-result-3-x-notFound--layout");
-  if (await page.$(".vtex-search-result-3-x-notFound--layout")) {
+  await page.waitForSelector(
+    '.contenedor-precio span, .vtex-search-result-3-x-notFound--layout',
+  );
+  if (await page.$('.vtex-search-result-3-x-notFound--layout')) {
     await browser.disconnect();
     await browser.close();
 
@@ -137,27 +154,35 @@ async function getVeaProductPrice(page: Page, browser: Browser) {
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = $(".contenedor-precio span")
-    ? fixStringNumber($(" .contenedor-precio span").first().text().replace("$", ""))
+  const price = $('.contenedor-precio span')
+    ? fixStringNumber(
+        $(' .contenedor-precio span').first().text().replace('$', ''),
+      )
     : undefined;
 
   return price;
 }
 async function getDiscoProductPrice(page: Page, browser: Browser) {
-  await page.waitForSelector(".contenedor-precio span, .vtex-search-result-3-x-notFound--layout");
-  if (await page.$(".vtex-search-result-3-x-notFound--layout")) {
+  const priceSelector =
+    '.vtex-flex-layout-0-x-flexRowContent--mainRow-price-box span';
+  const notFoundSelector = '.vtex-flex-layout-0-x-flexRow--not-found-page';
+
+  await page.waitForSelector(`${priceSelector}, ${notFoundSelector}`);
+  if (await page.$(notFoundSelector)) {
     await browser.disconnect();
     await browser.close();
 
     return undefined;
   }
+
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
   await browser.close();
   const $ = await cheerio.load(html, null, false);
-  const price = $(".contenedor-precio span")
-    ? fixStringNumber($(" .contenedor-precio span").first().text().replace("$", ""))
+  const priceContainer = $(priceSelector);
+  const price = priceContainer
+    ? fixStringNumber(priceContainer.first().text().replace('$', ''))
     : undefined;
 
   return price;
@@ -204,7 +229,7 @@ async function getCarrefourProductPrice(page: Page, browser: Browser) {
       .find(".lyracons-carrefourarg-product-price-1-x-sellingPrice")
       .first()
       .text()
-      .replace("$", ""),
+      .replace("$", "").replace(".", ""),
   );
 
   return price;

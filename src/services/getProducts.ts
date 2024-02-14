@@ -146,10 +146,9 @@ async function getAnonimaProducts(page: Page, browser: Browser) {
     window.scrollBy(0, window.innerHeight);
   });
 
-  await page.$$eval("producto .item", (images) => {
+  await page.$$eval('producto .item', (images) => {
     images.forEach(async (img) => {
       img.scrollIntoView();
-      console.log(img);
       await page.waitForTimeout(3000);
     });
   });
@@ -161,22 +160,27 @@ async function getAnonimaProducts(page: Page, browser: Browser) {
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
-  $(".producto .item").each((index, el) => {
+  $('.producto .item').each((index, el) => {
     const product = $(el);
-    const title = product.find(".titulo02").text().trim();
+    const title = product.find('.titulo02').text().trim();
     const link = `https://supermercado.laanonimaonline.com${product
-      .find("a")
+      .find('a')
       .first()
-      .attr("href")}`;
-    const price = fixStringNumber(product.find(".precio").text().replace("$", ""));
+      .attr('href')}`;
+    const price = fixStringNumber(
+      product.find('.precio').text().replace('$', ''),
+    );
 
-    product.find("img").removeClass("lazyloading");
-    const imageSrc = product.find("img").attr("src");
+    product.find('img').removeClass('lazyloading');
+    const imageSrc = product.find('img').attr('src');
     const image = `${
-      imageSrc.includes("https") ? "" : "https://supermercado.laanonimaonline.com"
+      imageSrc.includes('https')
+        ? ''
+        : 'https://supermercado.laanonimaonline.com'
     }${imageSrc}`;
 
-    if (price) products.push({title, price, image, link, market: "la anonima online"});
+    if (price)
+      products.push({ title, price, image, link, market: 'la anonima online' });
   });
 
   return products;
@@ -187,10 +191,9 @@ async function getVeaProducts(page: Page, browser: Browser) {
   await page.evaluate(() => {
     window.scrollBy(0, window.innerHeight);
   });
-  await page.$$eval("producto .item", (images) => {
+  await page.$$eval('producto .item', (images) => {
     images.forEach(async (img) => {
       img.scrollIntoView();
-      console.log(img);
       await page.waitForTimeout(3000);
     });
   });
@@ -200,19 +203,23 @@ async function getVeaProducts(page: Page, browser: Browser) {
   await browser.close();
   const $ = await cheerio.load(html, null, false);
 
-  $(".vtex-search-result-3-x-galleryItem").each((index, el) => {
+  $('.vtex-search-result-3-x-galleryItem').each((index, el) => {
     const product = $(el);
 
-    const title = product.find("h2").text().trim();
-    const link = ("https://www.vea.com.ar" + product.find("a").attr("href")) as string;
+    const title = product.find('h2').text().trim();
+    const link = ('https://www.vea.com.ar' +
+      product.find('a').attr('href')) as string;
 
     const price = fixStringNumber(
-      product.find(".vtex-flex-layout-0-x-flexRow--sellingPrice-discount ").text().replace("$", ""),
+      product
+        .find('.vtex-flex-layout-0-x-flexRow--sellingPrice-discount ')
+        .text()
+        .replace('$', ''),
     );
 
-    const image = product.find("img").attr("src") as string;
+    const image = product.find('img').attr('src') as string;
 
-    products.push({title, price, image, link, market: "vea"});
+    products.push({ title, price, image, link, market: 'vea' });
   });
 
   return products;
@@ -224,10 +231,9 @@ async function getDiscoProducts(page: Page, browser: Browser) {
     window.scrollBy(0, window.innerHeight);
   });
 
-  await page.$$eval("producto .item", (images) => {
+  await page.$$eval('producto .item', (images) => {
     images.forEach(async (img) => {
       img.scrollIntoView();
-      console.log(img);
       await page.waitForTimeout(3000);
     });
   });
@@ -238,17 +244,20 @@ async function getDiscoProducts(page: Page, browser: Browser) {
   await browser.close();
   const $ = await cheerio.load(html, null, false);
 
-  $(".vtex-search-result-3-x-galleryItem").each((index, el) => {
+  $('.vtex-search-result-3-x-galleryItem').each((index, el) => {
     const product = $(el);
 
-    const title = product.find("h2").text();
-    const link = ("https://www.disco.com.ar" + product.find("a").attr("href")) as string;
+    const title = product.find('h2').text();
+    const link = ('https://www.disco.com.ar' +
+      product.find('a').attr('href')) as string;
 
-    const price = fixStringNumber(product.find(".contenedor-precio").text().replace("$", ""));
+    const price = fixStringNumber(
+      product.find('.contenedor-precio').text().replace('$', ''),
+    );
 
-    const image = product.find("img").attr("src") as string;
+    const image = product.find('img').attr('src') as string;
 
-    products.push({title, price, image, link, market: "disco"});
+    products.push({ title, price, image, link, market: 'disco' });
   });
 
   return products;
