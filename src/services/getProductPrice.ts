@@ -47,7 +47,7 @@ const minimalArgs = [
 
 async function configureBrowser(url: string) {
   const browser = await puppeteer.launch(
-    process.env.NODE_ENV === 'production'
+    process.env.NODE_ENV !== 'development'
       ? {
           headless: true,
           args: minimalArgs,
