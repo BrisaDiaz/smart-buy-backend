@@ -18,7 +18,7 @@ function getSearchUrl(market: string, search: string) {
     coto: `https://www.cotodigital3.com.ar/sitios/cdigi/browse?product.language%3Aespa%C3%B1ol%2Cproduct.siteId%3ACotoDigital%29&Ns=sku.activePrice%7C0%7C%7Cproduct.displayName%7C0&Ntt=${search}&Nty=1&_D%3AsiteScope=+&atg_store_searchInput=${search}&siteScope=ok`,
     maxiconsumo: `https://maxiconsumo.com/catalogsearch/result/index/?product_list_order=price&q=${search}&product_list_limit=96&product_list_dir=asc`,
     "la anonima online": `https://supermercado.laanonimaonline.com/buscar?clave=${search}&pag=1&&orden=mep`,
-    dia: `https://diaonline.supermercadosdia.com.ar/busca/?ft=${search}`,
+    dia: `https://diaonline.supermercadosdia.com.ar/${search}?_q=${search}&map=ft&order=OrderByPriceASC`,
     "super mami": `https://www.dinoonline.com.ar/super/categoria?Nr=AND%28product.disponible%3ADisponible%2Cproduct.language%3Aespa%C3%B1ol%2Cproduct.priceListPair%3AsalePrices_listPrices%2COR%28product.siteId%3AsuperSite%29%29&Ns=sku.activePrice%7C0%7C%7Cproduct.displayName%7C0&Ntt=${search}&Nty=1&autoSuggestServiceUrl=%2Fassembler%3FassemblerContentCollection%3D%2Fcontent%2FShared%2FAuto-Suggest+Panels%26format%3Djson&containerClass=search_rubricator&defaultImage=%2Fimages%2Fno_image_auto_suggest.png&minAutoSuggestInputLength=3&rightNowEnabled=false&searchUrl=%2Fsuper`,
   };
 
@@ -66,11 +66,14 @@ const minimalArgs = [
 ];
 
 async function configureBrowser(url: string) {
-  const browser = await puppeteer.launch({
-    headless: true,
-
-    args: minimalArgs,
-  });
+  const browser = await puppeteer.launch(
+    process.env.NODE_ENV === "production"
+      ? {
+          headless: true,
+          args: minimalArgs,
+        }
+      : {headless: false},
+  );
   const page = await browser.newPage();
 
   await page.setViewport({width: 2560, height: 6000});
@@ -445,18 +448,25 @@ async function getDiaProducts(html: string) {
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
-  $(".vitrine li").each((index, el) => {
+  $(
+    '#gallery-layout-container .vtex-product-summary-2-x-clearLink--shelf',
+  ).each((index, el) => {
     const product = $(el);
-    const title = product.find(".product-name ").text().trim();
-    const link = product.find(".product-name a").attr("href") as string;
-
-    const price = !product.find(".best-price")
+    const title = product
+      .find('.vtex-product-summary-2-x-brandName')
+      .text()
+      .trim();
+    const link = product.find(product).attr('href') as string;
+    const foundPrice = product.find('.vtex-product-price-1-x-sellingPrice');
+    const price = !foundPrice
       ? undefined
-      : fixStringNumber(product.find(".best-price").text().replace("$", ""));
+      : fixStringNumber(foundPrice.text().replace('$', '').replace('.', ''));
 
-    const image = product.find(".product-image img").attr("src") as string;
+    const image = product
+      .find('.vtex-product-summary-2-x-image')
+      .attr('src') as string;
 
-    if (price) products.push({title, price, image, link, market: "dia"});
+    if (price) products.push({ title, price, image, link, market: 'dia' });
   });
 
   return products.sort(function (a, b) {
