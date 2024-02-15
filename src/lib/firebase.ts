@@ -1,5 +1,5 @@
-import dotenv from "dotenv";
-import {initializeApp} from "firebase/app";
+import dotenv from 'dotenv';
+import {initializeApp} from 'firebase/app';
 import {
   getFirestore,
   query,
@@ -15,8 +15,8 @@ import {
   DocumentSnapshot,
   DocumentData,
   orderBy,
-} from "firebase/firestore";
-dotenv.config({ path: ".env" });
+} from 'firebase/firestore';
+dotenv.config({path: '.env'});
 
 // TODO: Add SDKs for Firebase products that you want to use
 // https://firebase.google.com/docs/web/setup#available-libraries
@@ -36,11 +36,7 @@ const app = initializeApp(firebaseConfig);
 const db = getFirestore(app);
 
 export async function getProductByLink(link: string) {
-  const productsQuery = query(
-    collection(db, "Products"),
-    where("link", "==", link),
-    limit(1),
-  );
+  const productsQuery = query(collection(db, 'Products'), where('link', '==', link), limit(1));
   const productsSnapshot = await getDocs(productsQuery);
 
   const product = productsSnapshot.docs.map((doc) => {
@@ -61,7 +57,7 @@ export async function getProductByLink(link: string) {
   return product;
 }
 export async function getProductByID(id: string) {
-  const productRef = doc(db, "Products", id);
+  const productRef = doc(db, 'Products', id);
   const productSnapshot = await getDoc(productRef);
 
   const docData = productSnapshot.data();
@@ -79,9 +75,9 @@ export async function getProductByID(id: string) {
 }
 export async function getProductPriceHistory(productId: string) {
   const pricesQuery = query(
-    collection(db, "Prices"),
-    where("productId", "==", productId),
-    orderBy("createdAt", "desc"),
+    collection(db, 'Prices'),
+    where('productId', '==', productId),
+    orderBy('createdAt', 'desc'),
   );
   const pricesSnapshot = await getDocs(pricesQuery);
   const priceHistory = pricesSnapshot.docs.map((doc) => ({
@@ -98,13 +94,13 @@ export async function addProduct(product: {
   image: string;
   price: number;
 }) {
-  const createdProduct = await addDoc(collection(db, "Products"), {
+  const createdProduct = await addDoc(collection(db, 'Products'), {
     ...product,
     createdAt: Timestamp.now(),
     updatedAt: Timestamp.now(),
   });
 
-  await addDoc(collection(db, "Prices"), {
+  await addDoc(collection(db, 'Prices'), {
     value: product.price,
     productId: createdProduct.id,
     createdAt: Timestamp.now(),
@@ -120,11 +116,11 @@ export async function addProduct(product: {
   };
 }
 export async function updateProductPrice(id: string, price: number) {
-  await updateDoc(doc(db, "Products", id), {
+  await updateDoc(doc(db, 'Products', id), {
     price,
     updatedAt: Timestamp.now(),
   });
-  const createdPrice = await addDoc(collection(db, "Prices"), {
+  const createdPrice = await addDoc(collection(db, 'Prices'), {
     value: price,
     productId: id,
     createdAt: Timestamp.now(),

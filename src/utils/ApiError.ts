@@ -1,7 +1,7 @@
 class ApiError extends Error {
   isOperational: boolean;
   statusCode: number;
-  constructor(statusCode, message, isOperational = true, stack = "") {
+  constructor(statusCode, message, isOperational = true, stack = '') {
     super(message);
     this.statusCode = statusCode;
     this.isOperational = isOperational;

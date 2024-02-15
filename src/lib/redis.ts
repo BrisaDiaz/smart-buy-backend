@@ -1,16 +1,16 @@
-import {createClient} from "redis";
-import dotenv from "dotenv";
+import {createClient} from 'redis';
+import dotenv from 'dotenv';
 
-dotenv.config({path: ".env"});
+dotenv.config({path: '.env'});
 const client = createClient({
   url: `redis://default:${process.env.REDIS_DATABASE_PASSWORD}@${process.env.REDIS_DATABASE_ENDPOINT}`,
 });
 
-client.on("error", (err) => {
-  console.log("Error " + err);
+client.on('error', (err) => {
+  console.log('Error ' + err);
 });
-client.on("connect", () => {
-  console.log("redis connected successfully");
+client.on('connect', () => {
+  console.log('redis connected successfully');
 });
 
 export async function get(key: string) {

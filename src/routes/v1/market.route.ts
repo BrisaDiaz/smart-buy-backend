@@ -1,8 +1,8 @@
-import express from "express";
+import express from 'express';
 
-import {getMarketProducts} from "../../controllers";
+import {getMarketProducts} from '../../controllers';
 const router = express.Router();
 
-router.get("/search", getMarketProducts);
+router.get('/search', getMarketProducts);
 
 export default router;

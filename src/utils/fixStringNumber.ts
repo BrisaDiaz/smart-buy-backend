@@ -5,13 +5,13 @@ const fixStringNumber = (number: string) => {
     3: 1000,
     4: 10000,
   };
-  const isEsFormat = number.indexOf(",");
+  const isEsFormat = number.indexOf(',');
   let integer, decimal;
 
   if (isEsFormat !== -1) {
-    [integer, decimal] = number.split(",");
+    [integer, decimal] = number.split(',');
   } else {
-    [integer, decimal] = number.split(".");
+    [integer, decimal] = number.split('.');
   }
 
   if (!decimal) return parseInt(integer);

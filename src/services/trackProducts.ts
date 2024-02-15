@@ -1,16 +1,16 @@
-import dotenv from "dotenv";
+import dotenv from 'dotenv';
 
-import {saveWithTtl, get} from "../lib/redis";
-import {Product} from "../interfaces";
+import {saveWithTtl, get} from '../lib/redis';
+import {Product} from '../interfaces';
 import {
   getProductByLink,
   getProductPriceHistory,
   addProduct,
   updateProductPrice,
-} from "../lib/firebase";
+} from '../lib/firebase';
 
-import getProductPrice from "./getProductPrice";
-dotenv.config({path: ".env"});
+import getProductPrice from './getProductPrice';
+dotenv.config({path: '.env'});
 
 export async function initProductTrack(product: Product) {
   const productFound = await getProductByLink(product.link);
@@ -49,7 +49,7 @@ export async function updateProductPriceHistory(link: string, price?: number) {
   await saveWithTtl(
     product.link,
     data,
-    parseInt(process.env.TRACKED_PRODUCT_CACHE_REVALIDATION_INTERVAL_S || "21600"),
+    parseInt(process.env.TRACKED_PRODUCT_CACHE_REVALIDATION_INTERVAL_S || '21600'),
   );
 
   return data;
@@ -68,7 +68,7 @@ export async function getProductTrackedPrices(link: string) {
   await saveWithTtl(
     link,
     data,
-    parseInt(process.env.TRACKED_PRODUCT_CACHE_REVALIDATION_INTERVAL_S || "21600"),
+    parseInt(process.env.TRACKED_PRODUCT_CACHE_REVALIDATION_INTERVAL_S || '21600'),
   );
 
   return data;

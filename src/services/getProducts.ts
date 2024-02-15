@@ -1,14 +1,14 @@
-import puppeteer, {Page, Browser} from "puppeteer";
-import * as cheerio from "cheerio";
-import dotenv from "dotenv";
+import puppeteer, {Page, Browser} from 'puppeteer';
+import * as cheerio from 'cheerio';
+import dotenv from 'dotenv';
 
-import {Product} from "../interfaces";
-import {saveWithTtl, get} from "../lib/redis";
-import fixStringNumber from "../utils/fixStringNumber";
-dotenv.config({path: ".env"});
+import {Product} from '../interfaces';
+import {saveWithTtl, get} from '../lib/redis';
+import fixStringNumber from '../utils/fixStringNumber';
+dotenv.config({path: '.env'});
 
 function getSearchUrl(market: string, search: string) {
-  const BASE_URL: { [marketName: string]: string } = {
+  const BASE_URL: {[marketName: string]: string} = {
     cordiez: `https://www.cordiez.com.ar/s/${search}/o/OrderByPriceASC`,
     disco: `https://www.disco.com.ar/${search}?order=OrderByPriceASC`,
     vea: `https://www.vea.com.ar/${search}?OrderByPriceASC`,
@@ -72,11 +72,11 @@ async function configureBrowser(url: string) {
           headless: true,
           args: minimalArgs,
         }
-      : { headless: false },
+      : {headless: false},
   );
   const page = await browser.newPage();
 
-  await page.setViewport({ width: 1250, height: 6000 });
+  await page.setViewport({width: 1250, height: 6000});
   await page.goto(url, {
     waitUntil: 'networkidle2',
     timeout: 0,
@@ -85,7 +85,7 @@ async function configureBrowser(url: string) {
     'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/44.0.2403.157 Safari/537.36',
   );
 
-  return { page, browser };
+  return {page, browser};
 }
 
 async function getMarketProducts(market: string, page: Page, browser: Browser) {
@@ -123,7 +123,7 @@ async function getCordiezProducts(html: string) {
     );
     const image = product.find('.product-content img').attr('src') as string;
 
-    products.push({ title, price, image, link, market: 'cordiez' });
+    products.push({title, price, image, link, market: 'cordiez'});
   });
 
   return products;
@@ -135,8 +135,7 @@ async function getHiperlibertadProducts(html: string) {
   $('.vtex-product-summary-2-x-clearLink').each((index, el) => {
     const product = $(el);
     const title = product.find('.vtex-product-summary-2-x-productBrand').text();
-    const link = ('https://www.hiperlibertad.com.ar' +
-      product.attr('href')) as string;
+    const link = ('https://www.hiperlibertad.com.ar' + product.attr('href')) as string;
     const price = fixStringNumber(
       product
         .find('.vtex-product-price-1-x-sellingPriceValue')
@@ -144,11 +143,9 @@ async function getHiperlibertadProducts(html: string) {
         .replace('$', '')
         .replace('.', ''),
     );
-    const image = product
-      .find('.vtex-product-summary-2-x-image')
-      .attr('src') as string;
+    const image = product.find('.vtex-product-summary-2-x-image').attr('src') as string;
 
-    products.push({ title, price, image, link, market: 'hiperlibertad' });
+    products.push({title, price, image, link, market: 'hiperlibertad'});
   });
 
   return products;
@@ -180,24 +177,16 @@ async function getAnonimaProducts(page: Page, browser: Browser) {
       .first()
       .attr('href')}`;
     const price = fixStringNumber(
-      product
-        .find('.contenedor-plus .precio')
-        .first()
-        .text()
-        .replace('$', '')
-        .replace('.', ''),
+      product.find('.contenedor-plus .precio').first().text().replace('$', '').replace('.', ''),
     );
 
     product.find('img').removeClass('lazyloading');
     const imageSrc = product.find('img').attr('src');
     const image = `${
-      imageSrc.includes('https')
-        ? ''
-        : 'https://supermercado.laanonimaonline.com'
+      imageSrc.includes('https') ? '' : 'https://supermercado.laanonimaonline.com'
     }${imageSrc}`;
 
-    if (price)
-      products.push({ title, price, image, link, market: 'la anonima online' });
+    if (price) products.push({title, price, image, link, market: 'la anonima online'});
   });
 
   return products;
@@ -217,10 +206,7 @@ async function getVeaProducts(page: Page, browser: Browser) {
   $('.vtex-product-summary-2-x-clearLink').each((index, el) => {
     const product = $(el);
 
-    const title = product
-      .find('.vtex-product-summary-2-x-brandName')
-      .text()
-      .trim();
+    const title = product.find('.vtex-product-summary-2-x-brandName').text().trim();
     const link = ('https://www.vea.com.ar' + product.attr('href')) as string;
 
     const price = fixStringNumber(
@@ -233,7 +219,7 @@ async function getVeaProducts(page: Page, browser: Browser) {
 
     const image = product.find('img').attr('src') as string;
 
-    products.push({ title, price, image, link, market: 'vea' });
+    products.push({title, price, image, link, market: 'vea'});
   });
 
   return products;
@@ -261,8 +247,7 @@ async function getDiscoProducts(page: Page, browser: Browser) {
     const product = $(el);
 
     const title = product.find('h2').text();
-    const link = ('https://www.disco.com.ar' +
-      product.find('a').attr('href')) as string;
+    const link = ('https://www.disco.com.ar' + product.find('a').attr('href')) as string;
 
     const price = fixStringNumber(
       product
@@ -274,7 +259,7 @@ async function getDiscoProducts(page: Page, browser: Browser) {
 
     const image = product.find('img').attr('src') as string;
 
-    products.push({ title, price, image, link, market: 'disco' });
+    products.push({title, price, image, link, market: 'disco'});
   });
 
   return products;
@@ -296,10 +281,7 @@ async function getJumboProducts(page: Page, browser: Browser) {
   $('.vtex-product-summary-2-x-clearLink').each((index, el) => {
     const product = $(el);
 
-    const title = product
-      .find('.vtex-product-summary-2-x-brandName')
-      .text()
-      .trim();
+    const title = product.find('.vtex-product-summary-2-x-brandName').text().trim();
     const link = ('https://www.jumbo.com.ar/' + product.attr('href')) as string;
     const foundPrice = product
       .find('.vtex-flex-layout-0-x-flexColChild--shelf-main-price-box  span')
@@ -308,11 +290,9 @@ async function getJumboProducts(page: Page, browser: Browser) {
       ? fixStringNumber(foundPrice.text().replace('$', '').replace('.', ''))
       : undefined;
 
-    const image = product
-      .find('.vtex-product-summary-2-x-image')
-      .attr('src') as string;
+    const image = product.find('.vtex-product-summary-2-x-image').attr('src') as string;
 
-    if (price) products.push({ title, price, image, link, market: 'jumbo' });
+    if (price) products.push({title, price, image, link, market: 'jumbo'});
   });
 
   return products;
@@ -320,20 +300,14 @@ async function getJumboProducts(page: Page, browser: Browser) {
 async function getCarrefourProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
-  if (await page.$('.vtex-store-link-0-x-label--buttonNotFound'))
-    return products;
+  if (await page.$('.vtex-store-link-0-x-label--buttonNotFound')) return products;
 
-  await page.waitForSelector(
-    '.valtech-carrefourar-search-result-0-x-totalProducts--layout',
-  );
-  await page.$eval(
-    '.valtech-carrefourar-search-result-0-x-totalProducts--layout',
-    (results) => {
-      if (results.textContent === '0  Productos') {
-        return products;
-      }
-    },
-  );
+  await page.waitForSelector('.valtech-carrefourar-search-result-0-x-totalProducts--layout');
+  await page.$eval('.valtech-carrefourar-search-result-0-x-totalProducts--layout', (results) => {
+    if (results.textContent === '0  Productos') {
+      return products;
+    }
+  });
   await page.waitForSelector('.vtex-product-summary-2-x-clearLink');
 
   const html = await page.evaluate(() => document.body.innerHTML);
@@ -347,9 +321,7 @@ async function getCarrefourProducts(page: Page, browser: Browser) {
 
     const title = product.find('.vtex-product-summary-2-x-brandName').text();
     const link = ('https://www.carrefour.com.ar' +
-      product
-        .find('.vtex-product-summary-2-x-clearLink')
-        .attr('href')) as string;
+      product.find('.vtex-product-summary-2-x-clearLink').attr('href')) as string;
     const foundPrice = product
       .find(
         '.valtech-carrefourar-product-price-0-x-sellingPriceValue .valtech-carrefourar-product-price-0-x-currencyContainer',
@@ -357,15 +329,12 @@ async function getCarrefourProducts(page: Page, browser: Browser) {
       .first();
 
     const price = foundPrice
-      ? fixStringNumber(
-          foundPrice.text().replace('$', '').replace('.', '').trim(),
-        )
+      ? fixStringNumber(foundPrice.text().replace('$', '').replace('.', '').trim())
       : undefined;
 
     const image = product.find('img').first().attr('src') as string;
 
-    if (price)
-      products.push({ title, price, image, link, market: 'carrefour' });
+    if (price) products.push({title, price, image, link, market: 'carrefour'});
   });
 
   return products;
@@ -387,21 +356,16 @@ async function getCotoProducts(page: Page, browser: Browser) {
 
     const title = product.find('.span_productName .descrip_full').text();
     const link =
-      'https://www.cotodigital3.com.ar' +
-      product.find('.product_info_container a').attr('href');
+      'https://www.cotodigital3.com.ar' + product.find('.product_info_container a').attr('href');
     const matchPrice = product.find('.info_discount  .atg_store_newPrice');
 
     const price = matchPrice
-      ? fixStringNumber(
-          matchPrice.text().trim().replace('$', '').replace('.', ''),
-        )
+      ? fixStringNumber(matchPrice.text().trim().replace('$', '').replace('.', ''))
       : undefined;
 
-    const image = product
-      .find('.atg_store_productImage img')
-      .attr('src') as string;
+    const image = product.find('.atg_store_productImage img').attr('src') as string;
 
-    if (title) products.push({ title, price, image, link, market: 'coto' });
+    if (title) products.push({title, price, image, link, market: 'coto'});
   });
 
   return products;
@@ -409,7 +373,7 @@ async function getCotoProducts(page: Page, browser: Browser) {
 async function getMaxiProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
-  await page.waitForSelector('[data-value="asc"],.notice', { timeout: 0 });
+  await page.waitForSelector('[data-value="asc"],.notice', {timeout: 0});
   if (await page.$('.notice')) return products;
   await page.click('[data-value="asc"]');
   await page.evaluate(() => {
@@ -424,10 +388,7 @@ async function getMaxiProducts(page: Page, browser: Browser) {
   $('.product-item-info').each((index, el) => {
     const product = $(el);
     const title = product.find('.product-item-name').text().trim();
-    const link = product
-      .find('.product-item-link')
-      .first()
-      .attr('href') as string;
+    const link = product.find('.product-item-link').first().attr('href') as string;
     const price = fixStringNumber(
       product
         .find('[data-label="Incl. impuestos"]')
@@ -440,7 +401,7 @@ async function getMaxiProducts(page: Page, browser: Browser) {
     const image = product.find('.product-image-photo').attr('src') as string;
 
     if (price) {
-      products.push({ title, price, image, link, market: 'maxiconsumo' });
+      products.push({title, price, image, link, market: 'maxiconsumo'});
     }
   });
 
@@ -454,22 +415,16 @@ async function getSupermamiProducts(html: string) {
   $('.product').each((index, el) => {
     const product = $(el);
     const title = product.find('.description ').text().trim();
-    const link =
-      'https://www.dinoonline.com.ar' + product.find('.image a').attr('href');
+    const link = 'https://www.dinoonline.com.ar' + product.find('.image a').attr('href');
 
     const price = fixStringNumber(
-      product
-        .find('.precio-unidad span')
-        .first()
-        .text()
-        .replace('$', '')
-        .replace(',', ''),
+      product.find('.precio-unidad span').first().text().replace('$', '').replace(',', ''),
     );
 
     const image = product.find('.image img').attr('src') as string;
 
     if (price) {
-      products.push({ title, price, image, link, market: 'super mami' });
+      products.push({title, price, image, link, market: 'super mami'});
     }
   });
 
@@ -479,26 +434,18 @@ async function getDiaProducts(html: string) {
   const $ = await cheerio.load(html, null, false);
   const products: Product[] = [];
 
-  $(
-    '#gallery-layout-container .vtex-product-summary-2-x-clearLink--shelf',
-  ).each((index, el) => {
+  $('#gallery-layout-container .vtex-product-summary-2-x-clearLink--shelf').each((index, el) => {
     const product = $(el);
-    const title = product
-      .find('.vtex-product-summary-2-x-brandName')
-      .text()
-      .trim();
-    const link = ('https://diaonline.supermercadosdia.com.ar' +
-      product.attr('href')) as string;
+    const title = product.find('.vtex-product-summary-2-x-brandName').text().trim();
+    const link = ('https://diaonline.supermercadosdia.com.ar' + product.attr('href')) as string;
     const foundPrice = product.find('.vtex-product-price-1-x-sellingPrice');
     const price = !foundPrice
       ? undefined
       : fixStringNumber(foundPrice.text().replace('$', '').replace('.', ''));
 
-    const image = product
-      .find('.vtex-product-summary-2-x-image')
-      .attr('src') as string;
+    const image = product.find('.vtex-product-summary-2-x-image').attr('src') as string;
 
-    if (price) products.push({ title, price, image, link, market: 'dia' });
+    if (price) products.push({title, price, image, link, market: 'dia'});
   });
 
   return products.sort(function (a, b) {
@@ -517,7 +464,7 @@ async function getProducts(market: string, search: string) {
   const searchUrl = getSearchUrl(market, formattedKeyword);
 
   console.log(searchUrl);
-  const { page, browser } = await configureBrowser(searchUrl);
+  const {page, browser} = await configureBrowser(searchUrl);
 
   try {
     const products = await getMarketProducts(market, page, browser);
