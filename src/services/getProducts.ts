@@ -373,12 +373,6 @@ async function getCotoProducts(page: Page, browser: Browser) {
 async function getMaxiProducts(page: Page, browser: Browser) {
   const products: Product[] = [];
 
-  await page.waitForSelector('[data-value="asc"],.notice', {timeout: 0});
-  if (await page.$('.notice')) return products;
-  await page.click('[data-value="asc"]');
-  await page.evaluate(() => {
-    window.scrollBy(0, window.innerHeight);
-  });
   const html = await page.evaluate(() => document.body.innerHTML);
 
   await browser.disconnect();
@@ -388,7 +382,10 @@ async function getMaxiProducts(page: Page, browser: Browser) {
   $('.product-item-info').each((index, el) => {
     const product = $(el);
     const title = product.find('.product-item-name').text().trim();
-    const link = product.find('.product-item-link').first().attr('href') as string;
+    const link = product
+      .find('.product-item-link')
+      .first()
+      .attr('href') as string;
     const price = fixStringNumber(
       product
         .find('[data-label="Incl. impuestos"]')
@@ -401,7 +398,7 @@ async function getMaxiProducts(page: Page, browser: Browser) {
     const image = product.find('.product-image-photo').attr('src') as string;
 
     if (price) {
-      products.push({title, price, image, link, market: 'maxiconsumo'});
+      products.push({ title, price, image, link, market: 'maxiconsumo' });
     }
   });
 
